@@ -6,6 +6,10 @@ TagManager:
   tags:
   - Shield
   - Wall
+  - PlayerBullet
+  - EnemyBullet
+  - Monster
+  - NoDieMonster
   layers:
   - Default
   - TransparentFX

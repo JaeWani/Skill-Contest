@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : Singleton<Player>
 {
@@ -14,20 +15,25 @@ public class Player : Singleton<Player>
         );
     }
     [Header ("이미지")]
-    [SerializeField]Sprite right,left;
+    [SerializeField] Sprite right,left;
+    [SerializeField] Image HPBar;
+    [SerializeField] Text HPText;
     [Header ("플레이어 스탯")]
     [Range (0,10)] public float Speed;
     [Range (0,10)] public float BulletSpeed;
     [Range (0,10)] public float AttackSpeed;
+    [Range(0, 300)] public int PlayerHP = 100;
     [Header ("점멸 스킬 상태")]
     [SerializeField] public bool CanFlash = true;
     [SerializeField] public bool UseFlash = false;
     [SerializeField] [Range (1,10)] public float FlashCool = 5;
+    [SerializeField] Text FlashCoolTimeText;
     [Header ("보호막 스킬 상태")]
     [SerializeField] GameObject ShieldObj;
     [SerializeField] public bool CanShield = true;
     [SerializeField] [Range (1,20)]public float ShieldCool = 15;
     [SerializeField] [Range (1,20)]public float ShieldDuration = 5;
+    [SerializeField] Text ShieldCoolTimeText;
 
     public enum BulletKind
     {
@@ -101,7 +107,11 @@ public class Player : Singleton<Player>
         }
         Rigid.velocity = new Vector2(veloX * Speed,veloY * Speed);
     }
-
+    void SetHPBar() 
+    {
+        HPBar.fillAmount = PlayerHP / 100f;
+        HPText.text = string.Format("HP {0}/100", PlayerHP);
+    }
     void Flash() // 점멸 스킬입니다!
     {
         if(CanFlash == true)
@@ -179,14 +189,19 @@ public class Player : Singleton<Player>
         Flash();
         Shield();
         CheatKey();
+        SetHPBar();
     }
     void CheatKey()
     {
-        if(Input.GetKeyDown(KeyCode.F2))
+        if (Input.GetKeyDown(KeyCode.F2))
             CurrentItem = ItemKind.Fire3X;
-        else if(Input.GetKeyDown(KeyCode.F3))
+        else if (Input.GetKeyDown(KeyCode.F3))
             CurrentItem = ItemKind.Fire5X;
-        else if(Input.GetKeyDown(KeyCode.F1))
+        else if (Input.GetKeyDown(KeyCode.F1))
             CurrentItem = ItemKind.none;
+        else if (Input.GetKeyDown(KeyCode.F4))
+            PlayerHP -= 10;
+        else if (Input.GetKeyDown(KeyCode.F5))
+            PlayerHP += 10;
     }
 }
